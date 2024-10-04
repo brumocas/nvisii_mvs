@@ -15,7 +15,10 @@ RUN apt-get update && apt-get install -y \
     python3.6-dev \
     python3-pip \
     && apt-get clean \
+    && apt-get update \
+    && apt-get install -y wget unzip \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Set Python3.6 as the default python
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
@@ -29,8 +32,8 @@ RUN python3 --version && pip3 --version
 # Set the working directory
 WORKDIR /workspace/
 
-# Clone nvisii repository
-RUN git clone https://github.com/TontonTremblay/nvisii_mvs.git
+# Clone nvisii repository (Not need if you are using distrobox)
+#RUN git clone https://github.com/brumocas/nvisii_mvs.git
 
 # Optional: Set default command to open a shell in the workspace
 CMD ["/bin/bash"]
