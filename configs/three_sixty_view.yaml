@@ -1,5 +1,6 @@
 # these are the source of where these 3d models are
-model_source: lego
+model_source: google_scanned
+#model_source: lego
 
 model_path: content/brick_example/V8/
 
@@ -30,6 +31,7 @@ camera_distance: fixed
 # camera_distance is set to fixed
 camera_fixed_distance_factor: 1
 
+
 # The camera look at, if it not specified (value:=[]) it uses 
 # the scene centroid
 camera_look_at: []
@@ -40,6 +42,7 @@ camera_look_at: []
 # theta is the sitting plane, e.g., x-y plane
 camera_theta_range: [0,360]
 #this is the height of the camera range
+#camera_elevation_range: [40,90]
 camera_elevation_range: [40,90]
 
 # camera_type: fixed use this to control number of 
@@ -64,16 +67,17 @@ camera_fov: 0.785398
 # scene extra
 # using a random dome light to illuminate the scene
 add_dome_hdri: False
-path_dome_hdri_haven: ../dome_hdri_haven/
-dome_light_intensity: 1.2 
+path_dome_hdri_haven: content/hdri/
+dome_light_intensity: 1.2
 # Adding a table 
 add_table: False
 table_size: 0.4
 # table color: white or texture
 # if texture uses a random coo_texture
-table_color: white
-table_texture_scale: 0.1
-path_cco_textures: ../cco_textures/
+table_color: texture
+#table_texture_scale: 0.01
+table_texture_scale: 0.0001
+path_cco_textures: content/textures
 
 
 # rendering

@@ -2833,8 +2833,8 @@ def load_nvidia_scanned(path,suffix = ""):
 
 def load_google_scanned_objects(path,suffix = ""):
 
-    obj_to_load = path + "/meshes/model.obj"
-    texture_to_load = path + "/materials/textures/texture.png"
+    obj_to_load = path + "/model.obj"
+    texture_to_load = path + "texture.png"
 
     print("loading:",obj_to_load)
 
