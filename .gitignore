@@ -1,5 +1,6 @@
 content/ 
 output/
+data/
 *.mp4
 *.png
 *.exr 
