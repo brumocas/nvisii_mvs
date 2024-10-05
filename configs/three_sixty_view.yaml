@@ -67,17 +67,17 @@ camera_fov: 0.785398
 # scene extra
 # using a random dome light to illuminate the scene
 add_dome_hdri: False
-path_dome_hdri_haven: content/hdri/
+path_dome_hdri_haven: content/hdri
 dome_light_intensity: 1.2
 # Adding a table 
-add_table: False
-table_size: 0.4
+add_table: True
+#table_size: 0.4
+table_size: 1
 # table color: white or texture
 # if texture uses a random coo_texture
-table_color: texture
-#table_texture_scale: 0.01
-table_texture_scale: 0.0001
-path_cco_textures: content/textures
+table_color: brushed
+table_texture_scale: 0.01
+path_cco_textures: content/textures/wood
 
 
 # rendering
@@ -85,8 +85,8 @@ path_cco_textures: content/textures
 # sample per pixel for rendering
 sample_per_pixel: 2000
 # image width and height
-width: 400
-height: 400
+width: 500
+height: 500
 
 # file format style - png or exr
 file_format: png
