@@ -1,7 +1,10 @@
 content/
+outf/
+backgrouds/
 output/
 data/
 *.mp4
 *.png
 *.exr 
 *.jpg 
+__pycache__/
