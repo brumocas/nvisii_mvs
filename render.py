@@ -561,6 +561,9 @@ if cfg.add_dome_hdri is True:
     skyboxes = glob.glob(f'{cfg.path_dome_hdri_haven}/*.hdr')
     skybox_random_selection = skyboxes[random.randint(0,len(skyboxes)-1)]
 
+    # Debug to check selected hdri
+    print("Loaded hdri:", skybox_random_selection)
+
     dome_tex = cv2.imread(skybox_random_selection,  cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  
     # print(dome_tex.shape)
     import imageio
@@ -669,7 +672,7 @@ if cfg.add_table is True:
         mat.set_metallic(0.98)
 
     else:
-        textures_floor = glob.glob(cfg.path_cco_textures + "*/")
+        textures_floor = glob.glob(cfg.path_cco_textures)
         texture_random_selection = textures_floor[random.randint(0,len(textures_floor)-1)]
 
         entity_floor.set_material(material_from_cco(texture_random_selection,scale=cfg.table_texture_scale))

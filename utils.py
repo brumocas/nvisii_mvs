@@ -2867,11 +2867,11 @@ def material_from_cco(path_folder,scale=1):
     Return: 
         visii.material (visii.material): Returns a material object or None if there is a problem
     """
-    # print(path_folder.split("/")[-2])
+    #print(path_folder.split("/")[-2])
     mat = visii.material.create(path_folder.split("/")[-2])
 
     files = glob.glob(path_folder+'/*.jpg')+glob.glob(path_folder+'/*.png')
-    # print(files)
+    print(files)
 
     for file in files:
         name_file_visii = file + str(scale)
