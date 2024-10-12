@@ -224,19 +224,6 @@ if cfg.scene_type == 'falling':
         cuboid = add_cuboid(entity.get_name(), debug=False)
         cuboids[entity.get_name()] = cuboid
 
-elif cfg.model_source == "google_scanned":
-    entity_visii = load_google_scanned_objects(cfg.model_path)
-    
-    # might want to put that in the loading function
-    # entity_visii.get_transform().set_angle_axis(visii.pi()/2,visii.vec3(1,0,0))
-
-    cuboid = add_cuboid(entity_visii.get_name(), debug=False)
-    # print(cuboid)
-    entity_visii.get_transform().add_position(visii.vec3(0,0,-cuboid[0][2]/2))
-
-    cuboids[entity_visii.get_name()] = cuboid
-    export_names.append(entity_visii.get_name())
-
 elif cfg.model_source == "amazon_berkeley":
     entity_visii = load_amazon_object(cfg.model_path)
     
@@ -261,48 +248,37 @@ elif cfg.model_source == "low_poly_car":
     export_names = entity_visii_name_list
     # print(export_names)
 
-elif cfg.model_source == "obj":
-    entity_visii_name_list = visii.import_scene(
-        cfg.model_path,
-        visii.vec3(0,0,0),
-        visii.vec3(1,1,1), # the scale
-        visii.angleAxis(1.57, visii.vec3(1,0,0))
-        # visii.angleAxis(1.57, visii.vec3(1,0,0))
-    )
-    print(entity_visii_name_list)
-    parent = entity_visii_name_list.entities[0].get_transform().get_parent()
-    print(parent.get_name())
-    parent.set_position([0,0,0])
-    # texture = visii.texture.create_from_file('tex_obj',cfg.texture_path)
-    for m in entity_visii_name_list.entities:
-        cuboid = add_cuboid(m.get_name(), debug=False)
+elif cfg.model_source == "google_scanned":
+    # Define a list of positions for the single model
+    object_positions = [
+        {"position": [0, 0, 0]},
+        {"position": [0.1, 0.1, 0]},
+        {"position": [-0.1, -0.1, 0]},
+        # Add more positions as needed
+    ]
+    
+    # Loop over each position and add the model at each location
+    for i, obj in enumerate(object_positions):
+        # Load the same model for each position
+        entity_visii = load_google_scanned_objects(cfg.model_path, suffix=f"_{i}")
+        
+        # Optionally apply rotation if needed
+        entity_visii.get_transform().set_angle_axis(visii.pi()/2, visii.vec3(0, 0, 1))
+        
+        # Add a cuboid to the object
+        cuboid = add_cuboid(entity_visii.get_name(), debug=False)
+        
+        # Adjust the object's position based on cuboid dimensions
+        entity_visii.get_transform().add_position(visii.vec3(
+            obj["position"][0], obj["position"][1], obj["position"][2] - cuboid[0][2]/2
+        ))
+        
+        # Store the cuboid and object name
+        cuboids[entity_visii.get_name()] = cuboid
+        export_names.append(entity_visii.get_name())
+        
+        print(f"Added Google Scanned object: {entity_visii.get_name()} at position {obj['position']}")
 
-        # print(m.get_name())
-        # if 'geo' in m.get_name():
-        #     cuboid = add_cuboid(m.get_name(), debug=False)
-        # # rgb = colorsys.hsv_to_rgb(
-        #     random.uniform(0,1),
-        #     random.uniform(0.8,1),
-        #     random.uniform(0.9,1)
-        # )
-    for m in entity_visii_name_list.materials:
-        print(m.get_name())
-        rgb = colorsys.hsv_to_rgb(
-            random.uniform(0,1),
-            random.uniform(0.8,1),
-            random.uniform(0.9,1)
-        )
-
-        m.set_base_color(
-            visii.vec3(
-                1,
-                1,
-                1,
-            )
-        )  
-        m.set_roughness(0.7)
-        m.set_metallic(1)
-    # raise()
 elif cfg.model_source == "ply":
     if 'obj'in cfg.model_path:
         entity_visii_name_list = visii.import_scene(
@@ -564,6 +540,17 @@ if cfg.add_dome_hdri is True:
     # Debug to check selected hdri
     print("Loaded hdri:", skybox_random_selection)
 
+    hdri_texture = visii.texture.create_from_file("hdri_texture", skybox_random_selection)
+
+    # Set HDRI as the dome light texture
+    visii.set_dome_light_texture(hdri_texture)
+        
+    rotation_angle = random.uniform(0, 3.14)
+        
+    # Apply the rotation to the HDRI
+    visii.set_dome_light_rotation(visii.angleAxis(rotation_angle, visii.vec3(0, 0, 1)))
+
+    """
     dome_tex = cv2.imread(skybox_random_selection,  cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  
     # print(dome_tex.shape)
     import imageio
@@ -583,6 +570,7 @@ if cfg.add_dome_hdri is True:
         hdr = True
     )
     visii.set_dome_light_texture(dome_tex)
+        """
 
 elif "visii_sun" in cfg and cfg.visii_sun:
     # rgb = colorsys.hsv_to_rgb(
@@ -672,10 +660,15 @@ if cfg.add_table is True:
         mat.set_metallic(0.98)
 
     else:
-        textures_floor = glob.glob(cfg.path_cco_textures)
-        texture_random_selection = textures_floor[random.randint(0,len(textures_floor)-1)]
+        # Add table texture
+        table_texture = visii.texture.create_from_file("table_texture", cfg.path_cco_textures)
+        # Use the correct method to set the texture as the base color
+        mat.set_base_color_texture(table_texture)
 
-        entity_floor.set_material(material_from_cco(texture_random_selection,scale=cfg.table_texture_scale))
+        #textures_floor = glob.glob(cfg.path_cco_textures)
+        #texture_random_selection = textures_floor[random.randint(0,len(textures_floor)-1)]
+
+        #entity_floor.set_material(material_from_cco(texture_random_selection,scale=cfg.table_texture_scale))
     if cfg.scene_type == "centered":
         print(bb_min)
         entity_floor.get_transform().add_position(visii.vec3(0,0,bb_min[2]))

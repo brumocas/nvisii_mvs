@@ -2,7 +2,7 @@
 model_source: google_scanned
 #model_source: lego
 
-model_path: content/brick_example/V8/
+model_path: coffee_box/
 
 # what sort of scene do you want to render
 # valid values: centered, falling
@@ -29,7 +29,7 @@ camera_distance: fixed
 # distance factor to multiply to move the camera 
 # away from the object. Only have impact if 
 # camera_distance is set to fixed
-camera_fixed_distance_factor: 1
+camera_fixed_distance_factor: 0.6
 
 
 # The camera look at, if it not specified (value:=[]) it uses 
@@ -66,7 +66,7 @@ camera_fov: 0.785398
 
 # scene extra
 # using a random dome light to illuminate the scene
-add_dome_hdri: False
+add_dome_hdri: True
 path_dome_hdri_haven: content/hdri
 dome_light_intensity: 1.2
 # Adding a table 
@@ -75,9 +75,9 @@ add_table: True
 table_size: 1
 # table color: white or texture
 # if texture uses a random coo_texture
-table_color: brushed
-table_texture_scale: 0.01
-path_cco_textures: content/textures/wood
+table_color: texture
+table_texture_scale: 0.0001
+path_cco_textures: content/textures/natural-wooden-background.jpg
 
 
 # rendering

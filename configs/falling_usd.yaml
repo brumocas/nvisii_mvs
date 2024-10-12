@@ -3,11 +3,11 @@
 # what sort of 3d models are you loading
 # valids are lego, ycb, google_scanned, amazon_berkeley
 # these are the source of where these 3d models are
-# model_source: google_scanned
-model_source: nvidia_scanned
+model_source: google_scanned
+#model_source: nvidia_scanned
 
 # path to where the 3d model(s) is/are stored
-model_path: content/usd_models/
+model_path: coffee_box
 
 # what sort of scene do you want to render
 # valid values: centered, falling

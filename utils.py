@@ -2209,74 +2209,72 @@ create_obj.textures = {}
 
 def create_physics(
     name="",
-    mass = 1,         # mass in kg
-    concave = False,
-    ):
-
-    # Set the collision with the floor mesh
-    # first lets get the vertices 
+    mass=1,         # mass in kg
+    concave=False,
+):
+    # Get the object by name
     obj = visii.entity.get(name)
-    vertices = []
-    # print(name)
-    # print(obj.get_mesh())
-    # print(obj.to_string())
-    # print(visii.mesh.get("mesh_floor"))
+    if obj is None or obj.get_mesh() is None:
+        raise RuntimeError(f"Mesh for entity '{name}' is not loaded correctly.")
+    
+    # Get the vertices
+    vertices = np.array([[float(v[0]), float(v[1]), float(v[2])] for v in obj.get_mesh().get_vertices()])
+    print(f"Vertices shape: {vertices.shape}")
 
-    for v in obj.get_mesh().get_vertices():
-        vertices.append([float(v[0]),float(v[1]),float(v[2])])
-    print(np.array(vertices).shape)
-    min_z = np.min(np.array(vertices)[:,2])
-    max_z = np.max(np.array(vertices)[:,2])
-    print(min_z,max_z)
-    # raise()
-    # get the position of the object
+    # Debug vertex bounds
+    min_z = np.min(vertices[:, 2])
+    max_z = np.max(vertices[:, 2])
+    print(f"Min Z: {min_z}, Max Z: {max_z}")
+
+    # Get the object's position, scale, and rotation
     pos = obj.get_transform().get_position()
-    pos = [pos[0],pos[1],pos[2]]
+    pos = [pos[0], pos[1], pos[2]]
     scale = obj.get_transform().get_scale()
-    scale = [scale[0],scale[1],scale[2]]
+    scale = [scale[0], scale[1], scale[2]]
     rot = obj.get_transform().get_rotation()
-    rot = [rot[0],rot[1],rot[2],rot[3]]
+    rot = [rot[0], rot[1], rot[2], rot[3]]
 
-    # create a collision shape that is a convez hull
+    # Debug scale values
+    print(f"Scale: {scale}")
 
-    if concave:
-        indices = obj.get_mesh().get_triangle_indices()
-        obj_col_id = p.createCollisionShape(
-            p.GEOM_MESH,
-            vertices = vertices,
-            meshScale = scale,
-            indices = indices,
+    try:
+        if concave:
+            # Concave objects need triangle indices
+            indices = obj.get_mesh().get_triangle_indices()
+            print(f"Indices shape: {indices.shape}")
+            obj_col_id = p.createCollisionShape(
+                p.GEOM_MESH,
+                vertices=vertices.tolist(),
+                meshScale=scale,
+                indices=indices.tolist(),
+            )
+        else:
+            # Convex collision shape
+            obj_col_id = p.createCollisionShape(
+                p.GEOM_MESH,
+                vertices=vertices.tolist(),
+                meshScale=scale,
+            )
+    except Exception as e:
+        raise RuntimeError(f"Failed to create collision shape: {e}")
+
+    # Create body with or without mass
+    if mass is not None:
+        obj_id = p.createMultiBody(
+            baseMass=mass,
+            baseCollisionShapeIndex=obj_col_id,
+            basePosition=pos,
+            baseOrientation=rot,
         )
-
-
-    else:
-        # try:
-        []
-        obj_col_id = p.createCollisionShape(
-            p.GEOM_MESH,
-            vertices = vertices,
-            meshScale = scale,
-        )
-        # except:
-        #     return None
-    # create a body without mass so it is static
-    if not mass is None : 
-        obj_id = p.createMultiBody(  
-            baseMass = mass, 
-            baseCollisionShapeIndex = obj_col_id,
-            basePosition = pos,
-            baseOrientation= rot,
-            # baseInertialFramePosition =[0,0,max_z/2],
-        )        
     else:
         obj_id = p.createMultiBody(
-            baseCollisionShapeIndex = obj_col_id,
-            basePosition = pos,
-            baseOrientation= rot,
-            # baseInertialFramePosition = [0,0,max_z/2],
-        )    
-    
+            baseCollisionShapeIndex=obj_col_id,
+            basePosition=pos,
+            baseOrientation=rot,
+        )
+
     return obj_id
+
 
 
 def update_pose(obj_dict):
@@ -2839,7 +2837,7 @@ def load_google_scanned_objects(path,suffix = ""):
     print("loading:",obj_to_load)
 
     name = path.split('/')[-2] + suffix
-
+    
     scale = 1
     toy_mesh = visii.mesh.create_from_obj(name,obj_to_load)
 
@@ -2955,7 +2953,7 @@ def create_falling_scene(
     """
 
     import pybullet as p
-
+    
     if interactive:
         physicsClient = p.connect(p.GUI) # non-graphical version
     else:
@@ -2984,15 +2982,16 @@ def create_falling_scene(
 
         for specific_instance in specific_models:
             content_to_choose_from.append(objects_path + specific_instance + "/")
-        # nb_objects_to_load = len(content_to_choose_from)
-        # print(content_to_choose_from)
+        #nb_objects_to_load = len(content_to_choose_from)
+        #print(nb_objects_to_load)
         # raise()
-    # print(len(content_to_choose_from))
+    print(content_to_choose_from)
+
     for i_obj in range(int(nb_objects_to_load)):
         loading = True
 
         toy_to_load = content_to_choose_from[random.randint(0,len(content_to_choose_from)-1)]
-        # print(toy_to_load)
+        #print(toy_to_load)
         # if not specific_models is None:
         #     toy_to_load = content_to_choose_from[i_obj]
         if model_source == 'amazon_berkeley':
@@ -3023,7 +3022,6 @@ def create_falling_scene(
             # entity_loaded = visii.entity.get(entity_loaded[0])
             # raise()
 
-        
         entity_loaded.get_transform().set_rotation(
             visii.quat(
                 random.uniform(0, 1),
