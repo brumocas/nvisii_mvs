@@ -1,8 +1,10 @@
 # these are the source of where these 3d models are
 model_source: google_scanned
-#model_source: lego
+number_obj: 6
 
-model_path: coffee_box/
+# Model path to the Object to render
+#model_path: coffee_box/
+model_path: models/knee_tube/
 
 # what sort of scene do you want to render
 # valid values: centered, falling
@@ -29,7 +31,7 @@ camera_distance: fixed
 # distance factor to multiply to move the camera 
 # away from the object. Only have impact if 
 # camera_distance is set to fixed
-camera_fixed_distance_factor: 0.6
+camera_fixed_distance_factor: 0.8
 
 
 # The camera look at, if it not specified (value:=[]) it uses 
@@ -68,7 +70,7 @@ camera_fov: 0.785398
 # using a random dome light to illuminate the scene
 add_dome_hdri: True
 path_dome_hdri_haven: content/hdri
-dome_light_intensity: 1.2
+dome_light_intensity: 3
 # Adding a table 
 add_table: True
 #table_size: 0.4
@@ -77,16 +79,16 @@ table_size: 1
 # if texture uses a random coo_texture
 table_color: texture
 table_texture_scale: 0.0001
-path_cco_textures: content/textures/natural-wooden-background.jpg
+path_cco_textures: content/textures/*.jpg
 
 
 # rendering
 
 # sample per pixel for rendering
-sample_per_pixel: 2000
+sample_per_pixel: 500
 # image width and height
-width: 500
-height: 500
+width: 400
+height: 400
 
 # file format style - png or exr
 file_format: png
@@ -96,4 +98,4 @@ render_alpha: True
 # use denoiser
 denoiser: True
 # where to store the images and metadata
-outf: output/360_views/
+outf: data/0
