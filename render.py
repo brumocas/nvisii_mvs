@@ -13,6 +13,7 @@ import trimesh
 import yaml 
 import cv2
 
+from pos import *
 from utils import *
 # from nvisiijohn.utils import *
 
@@ -249,35 +250,146 @@ elif cfg.model_source == "low_poly_car":
     # print(export_names)
 
 elif cfg.model_source == "google_scanned":
-    # Define a list of positions for the single model
-    object_positions = [
-        {"position": [0, 0, 0]},
-        {"position": [0.1, 0.1, 0]},
-        {"position": [-0.1, -0.1, 0]},
-        # Add more positions as needed
-    ]
-    
-    # Loop over each position and add the model at each location
-    for i, obj in enumerate(object_positions):
-        # Load the same model for each position
-        entity_visii = load_google_scanned_objects(cfg.model_path, suffix=f"_{i}")
+
+    # Load the bounding box from the YAML file
+    filepath = cfg.model_path + "bb.yaml"
+    bounding_box_data = load_yaml(filepath)
+
+    # Random options
+    rand = random.randint(0,2)
+    object_positions = []
+    if rand == 0:
+        # Generate positions without collisions
+        object_positions = generate_positions_with_rotations_and_collisions(
+            bounding_box_data, num_positions=cfg.number_obj, x_range=(-0.2, 0.2), y_range=(-0.2, 0.2), z_range=(0, 0)
+        )
+    elif rand == 1:
+        x = 0 
+        y = 0
+        dist = 0.1
+        random_rotation = generate_random_rotation()
+        pos_0 = {
+                    "position": [x , y, 0],
+                    "rotation": random_rotation["rotation"],
+                    "axis": random_rotation["vector"]
+                }
+        object_positions.append(pos_0)
         
-        # Optionally apply rotation if needed
-        entity_visii.get_transform().set_angle_axis(visii.pi()/2, visii.vec3(0, 0, 1))
-        
-        # Add a cuboid to the object
-        cuboid = add_cuboid(entity_visii.get_name(), debug=False)
-        
-        # Adjust the object's position based on cuboid dimensions
-        entity_visii.get_transform().add_position(visii.vec3(
-            obj["position"][0], obj["position"][1], obj["position"][2] - cuboid[0][2]/2
-        ))
-        
-        # Store the cuboid and object name
-        cuboids[entity_visii.get_name()] = cuboid
-        export_names.append(entity_visii.get_name())
-        
-        print(f"Added Google Scanned object: {entity_visii.get_name()} at position {obj['position']}")
+        for i in range(int(cfg.number_obj/4)):
+            random_rotation = generate_random_rotation()
+            pos_1 = {
+                    "position": [x + dist, y + dist, 0],
+                    "rotation": random_rotation["rotation"],
+                    "axis": random_rotation["vector"]
+                }
+            pos_2 = {
+                    "position": [x - dist, y - dist, 0],
+                    "rotation": random_rotation["rotation"],
+                    "axis": random_rotation["vector"]
+                }
+            pos_3 = {
+                    "position": [x + dist, y - dist, 0],
+                    "rotation": random_rotation["rotation"],
+                    "axis": random_rotation["vector"]
+                }
+            pos_4 = {
+                    "position": [x - dist, y + dist, 0],
+                    "rotation": random_rotation["rotation"],
+                    "axis": random_rotation["vector"]
+                }
+            dist = dist + 0.1
+            object_positions.append(pos_1)
+            object_positions.append(pos_2)
+            object_positions.append(pos_3)
+            object_positions.append(pos_4)
+            
+    # Random options
+    rand = random.randint(0,3)
+    # Place objects randomly 
+    if rand == 0:
+        # Place objects randomly    
+
+        # Loop over each position and add the model at each location
+        for i, obj in enumerate(object_positions):
+            # Load the same model for each position
+            entity_visii = load_google_scanned_objects(cfg.model_path, suffix=f"_{i}")
+            
+            # Optionally apply rotation if needed
+            entity_visii.get_transform().set_angle_axis(obj["rotation"], visii.vec3(obj["axis"]["x"], obj["axis"]["y"], obj["axis"]["z"])) 
+
+            # Add a cuboid to the object
+            cuboid = add_cuboid(entity_visii.get_name(), debug=False)
+            
+            # Adjust the object's position based on cuboid dimensions
+            entity_visii.get_transform().add_position(visii.vec3(   
+                obj["position"][0], obj["position"][1], obj["position"][2] - cuboid[0][2]/2
+            ))
+            
+            # Store the cuboid and object name
+            cuboids[entity_visii.get_name()] = cuboid
+            export_names.append(entity_visii.get_name())
+            
+            print(f"Added Google Scanned object: {entity_visii.get_name()} at position {obj['position']}")
+            
+            if cfg.number_obj < i:
+                break
+
+    elif rand == 1:
+        # Rotation in y
+
+        # Loop over each position and add the model at each location
+        for i, obj in enumerate(object_positions):
+            # Load the same model for each position
+            entity_visii = load_google_scanned_objects(cfg.model_path, suffix=f"_{i}")
+            
+            # Optionally apply rotation if needed
+            entity_visii.get_transform().set_angle_axis(visii.pi(), visii.vec3(0, 1, 0)) 
+
+            # Add a cuboid to the object
+            cuboid = add_cuboid(entity_visii.get_name(), debug=False)
+            
+            # Adjust the object's position based on cuboid dimensions
+            entity_visii.get_transform().add_position(visii.vec3(   
+                obj["position"][0], obj["position"][1], obj["position"][2] - cuboid[0][2]/2
+            ))
+            
+            # Store the cuboid and object name
+            cuboids[entity_visii.get_name()] = cuboid
+            export_names.append(entity_visii.get_name())
+            
+            print(f"Added Google Scanned object: {entity_visii.get_name()} at position {obj['position']}")
+
+            if cfg.number_obj < i:
+                break
+
+    elif rand == 2:
+        # No rotation
+
+        # Loop over each position and add the model at each location
+        for i, obj in enumerate(object_positions):
+            # Load the same model for each position
+            entity_visii = load_google_scanned_objects(cfg.model_path, suffix=f"_{i}")
+            
+            # Optionally apply rotation if needed
+            entity_visii.get_transform().set_angle_axis(visii.pi()/2, visii.vec3(0, 0, 1)) 
+
+            # Add a cuboid to the object
+            cuboid = add_cuboid(entity_visii.get_name(), debug=False)
+            
+            # Adjust the object's position based on cuboid dimensions
+            entity_visii.get_transform().add_position(visii.vec3(   
+                obj["position"][0], obj["position"][1], obj["position"][2] - cuboid[0][2]/2
+            ))
+            
+            # Store the cuboid and object name
+            cuboids[entity_visii.get_name()] = cuboid
+            export_names.append(entity_visii.get_name())
+            
+            print(f"Added Google Scanned object: {entity_visii.get_name()} at position {obj['position']}")
+
+            if cfg.number_obj < i:
+                break
+
 
 elif cfg.model_source == "ply":
     if 'obj'in cfg.model_path:
@@ -660,8 +772,11 @@ if cfg.add_table is True:
         mat.set_metallic(0.98)
 
     else:
+        textures_floor = glob.glob(cfg.path_cco_textures)
+        texture_random_selection = textures_floor[random.randint(0,len(textures_floor)-1)]
+
         # Add table texture
-        table_texture = visii.texture.create_from_file("table_texture", cfg.path_cco_textures)
+        table_texture = visii.texture.create_from_file("table_texture", texture_random_selection)
         # Use the correct method to set the texture as the base color
         mat.set_base_color_texture(table_texture)
 
