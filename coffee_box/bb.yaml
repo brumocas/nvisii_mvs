@@ -1,0 +1,18 @@
+BoundingBox:
+  Min:
+    x: -0.0439
+    y: -0.0502  
+    z: -0.1270
+  Max:
+    x: 0.0617
+    y: 0.0543
+    z: 0.1533
+  Size:
+    x: 0.1056
+    y: 0.1045
+    z: 0.2803
+  Center:
+    x: 0.089
+    y: 0.020
+    z: 0.0132
+  Warning: "values do not consider transformation"
