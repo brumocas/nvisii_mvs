@@ -1,10 +1,10 @@
 # these are the source of where these 3d models are
 model_source: google_scanned
-number_obj: 6
+number_obj: 5
 
 # Model path to the Object to render
-#model_path: coffee_box/
-model_path: models/knee_tube/
+model_path: coffee_box/
+#model_path: models/power_bank/
 
 # what sort of scene do you want to render
 # valid values: centered, falling
