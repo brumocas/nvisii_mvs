@@ -33,7 +33,7 @@ RUN python3 --version && pip3 --version
 WORKDIR /workspace/
 
 # Clone nvisii repository (Not need if you are using distrobox)
-#RUN git clone https://github.com/brumocas/nvisii_mvs.git
+RUN git clone https://github.com/brumocas/nvisii_mvs.git
 
 # Optional: Set default command to open a shell in the workspace
 CMD ["/bin/bash"]
