@@ -4,6 +4,5 @@ backgrouds/
 output/
 data/
 *.mp4
-*.exr 
-*.jpg 
+*.exr  
 __pycache__/
