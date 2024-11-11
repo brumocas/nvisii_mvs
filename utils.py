@@ -2838,6 +2838,7 @@ def load_google_scanned_objects(path,suffix = ""):
 
     name = path.split('/')[-2] + suffix
     
+    #scale = 1
     scale = 1
     toy_mesh = visii.mesh.create_from_obj(name,obj_to_load)
 

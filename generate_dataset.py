@@ -28,5 +28,5 @@ def run_workers(num_instances):
         time.sleep(1)
 
 if __name__ == "__main__":
-    num_instances = 1  # Adjust this number as needed
+    num_instances = 2  # Adjust this number as needed
     run_workers(num_instances)

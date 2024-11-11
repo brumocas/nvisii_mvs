@@ -1,9 +1,10 @@
 # these are the source of where these 3d models are
 model_source: google_scanned
-number_obj: 2
+number_obj: 10
 
 # Model path to the Object to render
 model_path: coffee_box/
+#model_path: car_lock_black/
 #model_path: models/power_bank/
 
 # what sort of scene do you want to render
@@ -31,7 +32,8 @@ camera_distance: fixed
 # distance factor to multiply to move the camera 
 # away from the object. Only have impact if 
 # camera_distance is set to fixed
-camera_fixed_distance_factor: 0.8
+#camera_fixed_distance_factor: 0.8
+camera_fixed_distance_factor: 0.5
 
 
 # The camera look at, if it not specified (value:=[]) it uses 
@@ -44,8 +46,8 @@ camera_look_at: []
 # theta is the sitting plane, e.g., x-y plane
 camera_theta_range: [0,360]
 #this is the height of the camera range
+camera_elevation_range: [0,50]
 #camera_elevation_range: [40,90]
-camera_elevation_range: [40,90]
 
 # camera_type: fixed use this to control number of 
 # frames to render. 
